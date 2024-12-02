@@ -60,7 +60,7 @@ public partial class BookManagementDbContext : DbContext
 
             entity.ToTable("BookCategory");
 
-            entity.Property(e => e.BookCategoryId).ValueGeneratedNever();
+            entity.Property(e => e.BookCategoryId).ValueGeneratedOnAdd();
             entity.Property(e => e.BookGenreType).HasMaxLength(50);
             entity.Property(e => e.Description).HasMaxLength(500);
         });
@@ -71,7 +71,7 @@ public partial class BookManagementDbContext : DbContext
 
             entity.ToTable("UserAccount");
 
-            entity.Property(e => e.MemberId).ValueGeneratedNever();
+            entity.Property(e => e.MemberId).ValueGeneratedOnAdd();
             entity.Property(e => e.Email).HasMaxLength(50);
             entity.Property(e => e.FullName).HasMaxLength(50);
             entity.Property(e => e.Password).HasMaxLength(50);

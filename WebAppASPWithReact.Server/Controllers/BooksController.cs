@@ -5,7 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebAppASPWithReact.Server.DTOs.Requests;
+using WebAppASPWithReact.Server.DTOs.Responses;
 using WebAppASPWithReact.Server.Models;
+using WebAppASPWithReact.Server.Services;
 
 namespace WebAppASPWithReact.Server.Controllers
 {
@@ -13,25 +16,25 @@ namespace WebAppASPWithReact.Server.Controllers
     [ApiController]
     public class BooksController : ControllerBase
     {
-        private readonly BookManagementDbContext _context;
+        private readonly IBookService _bookService;
 
-        public BooksController()
+        public BooksController(IBookService bookService)
         {
-            _context = new BookManagementDbContext();
+            _bookService = bookService;
         }
 
         // GET: api/Books
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Book>>> GetBooks()
         {
-            return await _context.Books.ToListAsync();
+            return Ok(await _bookService.GetBooksAsync());
         }
 
         // GET: api/Books/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Book>> GetBook(int id)
+        public async Task<ActionResult<BookResponse>> GetBook(int id)
         {
-            var book = await _context.Books.FindAsync(id);
+            var book = await _bookService.GetBookByIdAsync(id);
 
             if (book == null)
             {
@@ -44,42 +47,22 @@ namespace WebAppASPWithReact.Server.Controllers
         // PUT: api/Books/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBook(int id, Book book)
+        public async Task<IActionResult> PutBook(int id, BookDTO book)
         {
             if (id != book.BookId)
             {
                 return BadRequest();
             }
-
-            _context.Entry(book).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!BookExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
+            await _bookService.UpdateBookAsync(id, book);
             return NoContent();
         }
 
         // POST: api/Books
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Book>> PostBook(Book book)
+        public async Task<ActionResult<BookResponse>> PostBook(BookDTO book)
         {
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
-
+            await _bookService.CreateBookAsync(book);
             return CreatedAtAction("GetBook", new { id = book.BookId }, book);
         }
 
@@ -87,21 +70,8 @@ namespace WebAppASPWithReact.Server.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(int id)
         {
-            var book = await _context.Books.FindAsync(id);
-            if (book == null)
-            {
-                return NotFound();
-            }
-
-            _context.Books.Remove(book);
-            await _context.SaveChangesAsync();
-
+            await _bookService.DeleteBookAsync(id);
             return NoContent();
-        }
-
-        private bool BookExists(int id)
-        {
-            return _context.Books.Any(e => e.BookId == id);
         }
     }
 }

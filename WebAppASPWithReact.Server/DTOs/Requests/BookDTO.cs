@@ -24,7 +24,7 @@ namespace WebAppASPWithReact.Server.DTOs.Requests
 
         [Required]
         [JsonPropertyName("quantity")]
-        [Range(1, int.MaxValue)]
+        [Range(0, int.MaxValue)]
         public int Quantity { get; set; }
 
         [Required]
@@ -38,6 +38,7 @@ namespace WebAppASPWithReact.Server.DTOs.Requests
 
         [Required]
         [JsonPropertyName("book_category_id")]
+        [Range(1, int.MaxValue)]
         public int BookCategoryId { get; set; }
     }
 }
