@@ -17,7 +17,7 @@ namespace WebAppASPWithReact.Server.Converters
                 Quantity = book.Quantity,
                 Price = book.Price,
                 Author = book.Author,
-                BookCategoryName = book.BookCategory.BookGenreType // Assuming BookGenreType is the property name
+                BookCategoryId = book.BookCategory.BookCategoryId
             };
         }
     }

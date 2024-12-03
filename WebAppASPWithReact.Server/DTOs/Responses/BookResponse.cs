@@ -27,7 +27,7 @@ namespace WebAppASPWithReact.Server.DTOs.Responses
         [JsonPropertyName("author")]
         public string Author { get; set; } = null!;
 
-        [JsonPropertyName("book_category_name")]
-        public string BookCategoryName { get; set; } = null!;
+        [JsonPropertyName("book_category_id")]
+        public int BookCategoryId { get; set; }
     }
 }
